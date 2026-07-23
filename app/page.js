@@ -1,7 +1,8 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { questions, patterns, difficulties, getAllTypes, getPatternById } from "@/lib/data";
+import { questions, patterns, difficulties, categories, getPatternById } from "@/lib/data";
+import { useAllProgress } from "@/lib/progress";
 import FilterBar from "@/components/FilterBar";
 import PatternPanel from "@/components/PatternPanel";
 import QuestionCard from "@/components/QuestionCard";
@@ -11,10 +12,11 @@ export default function Home() {
     search: "",
     difficulty: "All",
     patternId: "All",
-    type: "All",
+    category: "All",
+    status: "All",
   });
 
-  const types = useMemo(() => getAllTypes(), []);
+  const progress = useAllProgress();
 
   const filtered = useMemo(() => {
     return questions.filter((q) => {
@@ -25,12 +27,18 @@ export default function Home() {
         return false;
       if (filters.difficulty !== "All" && q.difficulty !== filters.difficulty) return false;
       if (filters.patternId !== "All" && q.patternId !== filters.patternId) return false;
-      if (filters.type !== "All" && !q.types.includes(filters.type)) return false;
+      if (filters.category !== "All" && q.category !== filters.category) return false;
+      if (filters.status !== "All") {
+        const s = progress[q.id];
+        if (filters.status === "todo" && s) return false;
+        if (filters.status !== "todo" && s !== filters.status) return false;
+      }
       return true;
     });
-  }, [filters]);
+  }, [filters, progress]);
 
   const easyCount = questions.filter((q) => q.difficulty === "Easy").length;
+  const doneCount = Object.values(progress).filter((s) => s === "done").length;
 
   return (
     <div className="min-h-screen text-[#232338]">
@@ -63,6 +71,10 @@ export default function Home() {
               <div className="text-violet-500 text-[11px] font-medium">Patterns</div>
               <div className="font-bold text-violet-600">{patterns.length}</div>
             </div>
+            <div className="text-right rounded-2xl bg-emerald-50 border border-emerald-200 px-3.5 py-1.5 backdrop-blur-sm">
+              <div className="text-emerald-500 text-[11px] font-medium">✅ Done</div>
+              <div className="font-bold text-emerald-700">{doneCount}</div>
+            </div>
           </div>
         </div>
       </header>
@@ -72,21 +84,21 @@ export default function Home() {
         <div className="rounded-3xl border border-white/70 bg-white/45 backdrop-blur-xl p-6 flex items-center justify-between shadow-[0_4px_30px_-10px_rgba(80,80,120,0.15)]">
           <div>
             <p className="text-xs font-semibold text-violet-500 tracking-wide uppercase mb-1">
-              ✨ Step 1 of your journey
+              ✨ The full Blind 75, at your own pace
             </p>
             <h2 className="text-xl font-bold text-[#232338]">
-              Master these 5 easy questions first
+              {questions.length} questions across {categories.length} categories
             </h2>
             <p className="text-sm text-slate-500 mt-1.5 max-w-xl">
-              No pressure, no rush. Click into any question for a full, chill breakdown —
-              explained the way a friend would, not a textbook.
+              No pressure, no rush. Click into any question for a chill breakdown, then mark
+              it Done or Review to track where you're at.
             </p>
           </div>
           <div className="hidden sm:flex flex-col items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-100 via-sky-100 to-violet-100 px-6 py-4 border border-white/70">
             <div className="text-2xl font-extrabold text-[#232338]">
-              {questions.length}/{questions.length}
+              {doneCount}/{questions.length}
             </div>
-            <div className="text-[11px] text-slate-500 font-medium">unlocked</div>
+            <div className="text-[11px] text-slate-500 font-medium">done</div>
           </div>
         </div>
       </div>
@@ -98,7 +110,7 @@ export default function Home() {
           <FilterBar
             patterns={patterns}
             difficulties={difficulties}
-            types={types}
+            categories={categories}
             filters={filters}
             setFilters={setFilters}
             resultCount={filtered.length}
@@ -125,7 +137,7 @@ export default function Home() {
       </main>
 
       <footer className="max-w-7xl mx-auto px-6 py-10 text-center text-xs text-slate-400">
-        Built for step-by-step DSA practice. More questions coming as you progress. 🌿
+        Built for step-by-step DSA practice. Progress is saved in this browser. 🌿
       </footer>
     </div>
   );

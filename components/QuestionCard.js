@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useQuestionProgress } from "@/lib/progress";
 
 const difficultyColors = {
   Easy: "text-emerald-700 border-emerald-200 bg-emerald-50",
@@ -8,11 +9,20 @@ const difficultyColors = {
   Hard: "text-rose-700 border-rose-200 bg-rose-50",
 };
 
+const statusStyles = {
+  done: "border-emerald-300 ring-2 ring-emerald-100",
+  review: "border-amber-300 ring-2 ring-amber-100",
+};
+
 export default function QuestionCard({ question, pattern }) {
+  const [status] = useQuestionProgress(question.id);
+
   return (
     <Link
       href={`/questions/${question.id}`}
-      className="group block rounded-3xl border border-white/70 bg-white/55 backdrop-blur-xl p-5 shadow-[0_4px_24px_-8px_rgba(80,80,120,0.15)] hover:shadow-[0_8px_32px_-8px_rgba(80,80,120,0.25)] hover:-translate-y-0.5 hover:border-white transition-all duration-300"
+      className={`group block rounded-3xl border bg-white/55 backdrop-blur-xl p-5 shadow-[0_4px_24px_-8px_rgba(80,80,120,0.15)] hover:shadow-[0_8px_32px_-8px_rgba(80,80,120,0.25)] hover:-translate-y-0.5 hover:border-white transition-all duration-300 ${
+        status ? statusStyles[status] : "border-white/70"
+      }`}
     >
       <div className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-3 min-w-0">
@@ -24,6 +34,8 @@ export default function QuestionCard({ question, pattern }) {
           <span className="text-base font-semibold text-[#232338] truncate group-hover:text-violet-700 transition-colors">
             {question.title}
           </span>
+          {status === "done" && <span className="shrink-0 text-emerald-500 text-sm">✅</span>}
+          {status === "review" && <span className="shrink-0 text-amber-500 text-sm">🔖</span>}
         </div>
         <span className="shrink-0 text-slate-300 group-hover:text-violet-400 group-hover:translate-x-0.5 transition-all text-lg">
           →
@@ -35,19 +47,16 @@ export default function QuestionCard({ question, pattern }) {
       </p>
 
       <div className="mt-4 flex flex-wrap gap-1.5">
+        {question.category && (
+          <span className="text-xs px-2.5 py-1 rounded-full bg-rose-50 text-rose-600 border border-rose-100 font-medium">
+            {question.category}
+          </span>
+        )}
         {pattern && (
           <span className="text-xs px-2.5 py-1 rounded-full bg-violet-50 text-violet-600 border border-violet-100 font-medium">
             🧩 {pattern.name}
           </span>
         )}
-        {question.types.map((t) => (
-          <span
-            key={t}
-            className="text-xs px-2.5 py-1 rounded-full bg-sky-50 text-sky-600 border border-sky-100 font-medium"
-          >
-            {t}
-          </span>
-        ))}
       </div>
     </Link>
   );
