@@ -1,9 +1,9 @@
 "use client";
 
 const difficultyColors = {
-  Easy: "text-emerald-700 border-emerald-300 bg-emerald-100",
-  Medium: "text-amber-700 border-amber-300 bg-amber-100",
-  Hard: "text-rose-700 border-rose-300 bg-rose-100",
+  Easy: "text-emerald-700 border-emerald-200 bg-emerald-50",
+  Medium: "text-amber-700 border-amber-200 bg-amber-50",
+  Hard: "text-rose-700 border-rose-200 bg-rose-50",
 };
 
 export default function FilterBar({
@@ -20,33 +20,33 @@ export default function FilterBar({
     setFilters({ search: "", difficulty: "All", patternId: "All", type: "All" });
 
   return (
-    <div className="rounded-2xl border border-pink-200 bg-white/80 backdrop-blur-sm shadow-sm shadow-pink-100 p-4">
-      <div className="flex items-center justify-between mb-3">
-        <h2 className="text-sm font-bold text-[#2b2440] tracking-wide uppercase flex items-center gap-1.5">
-          🎯 Filters
+    <div className="rounded-3xl border border-white/70 bg-white/55 backdrop-blur-xl shadow-[0_4px_24px_-8px_rgba(80,80,120,0.12)] p-5">
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-sm font-semibold text-[#232338] tracking-wide flex items-center gap-1.5">
+          🎛️ Filters
         </h2>
         <button
           onClick={reset}
-          className="text-xs text-pink-500 hover:text-pink-600 font-medium transition-colors"
+          className="text-xs text-violet-500 hover:text-violet-600 font-medium transition-colors"
         >
           Reset
         </button>
       </div>
 
-      <div className="space-y-3">
+      <div className="space-y-4">
         <div>
-          <label className="text-xs text-[#8b7f9e] mb-1 block font-medium">Search by name</label>
+          <label className="text-xs text-slate-400 mb-1.5 block font-medium">Search</label>
           <input
             type="text"
             value={filters.search}
             onChange={(e) => update("search", e.target.value)}
             placeholder="e.g. Two Sum"
-            className="w-full rounded-lg bg-orange-50/60 border border-orange-200 px-3 py-1.5 text-sm text-[#2b2440] placeholder-[#c4b8d4] focus:outline-none focus:border-pink-400 focus:ring-2 focus:ring-pink-100"
+            className="w-full rounded-xl bg-white/70 border border-slate-200 px-3 py-2 text-sm text-[#232338] placeholder-slate-300 focus:outline-none focus:border-violet-300 focus:ring-4 focus:ring-violet-100 transition-all"
           />
         </div>
 
         <div>
-          <label className="text-xs text-[#8b7f9e] mb-1 block font-medium">Difficulty</label>
+          <label className="text-xs text-slate-400 mb-1.5 block font-medium">Difficulty</label>
           <div className="flex flex-wrap gap-1.5">
             {["All", ...difficulties].map((d) => (
               <button
@@ -55,9 +55,9 @@ export default function FilterBar({
                 className={`text-xs px-2.5 py-1 rounded-full border font-medium transition-all ${
                   filters.difficulty === d
                     ? d === "All"
-                      ? "border-violet-300 bg-violet-100 text-violet-700"
+                      ? "border-violet-200 bg-violet-100 text-violet-700"
                       : difficultyColors[d]
-                    : "border-[#eee2f5] text-[#a89cbf] hover:border-pink-200 hover:bg-pink-50"
+                    : "border-slate-200 text-slate-400 hover:border-violet-200 hover:bg-violet-50/60"
                 }`}
               >
                 {d}
@@ -67,11 +67,11 @@ export default function FilterBar({
         </div>
 
         <div>
-          <label className="text-xs text-[#8b7f9e] mb-1 block font-medium">Pattern</label>
+          <label className="text-xs text-slate-400 mb-1.5 block font-medium">Pattern</label>
           <select
             value={filters.patternId}
             onChange={(e) => update("patternId", e.target.value)}
-            className="w-full rounded-lg bg-orange-50/60 border border-orange-200 px-3 py-1.5 text-sm text-[#2b2440] focus:outline-none focus:border-pink-400 focus:ring-2 focus:ring-pink-100"
+            className="w-full rounded-xl bg-white/70 border border-slate-200 px-3 py-2 text-sm text-[#232338] focus:outline-none focus:border-violet-300 focus:ring-4 focus:ring-violet-100 transition-all"
           >
             <option value="All">All patterns</option>
             {patterns.map((p) => (
@@ -83,11 +83,11 @@ export default function FilterBar({
         </div>
 
         <div>
-          <label className="text-xs text-[#8b7f9e] mb-1 block font-medium">Type</label>
+          <label className="text-xs text-slate-400 mb-1.5 block font-medium">Type</label>
           <select
             value={filters.type}
             onChange={(e) => update("type", e.target.value)}
-            className="w-full rounded-lg bg-orange-50/60 border border-orange-200 px-3 py-1.5 text-sm text-[#2b2440] focus:outline-none focus:border-pink-400 focus:ring-2 focus:ring-pink-100"
+            className="w-full rounded-xl bg-white/70 border border-slate-200 px-3 py-2 text-sm text-[#232338] focus:outline-none focus:border-violet-300 focus:ring-4 focus:ring-violet-100 transition-all"
           >
             <option value="All">All types</option>
             {types.map((t) => (
@@ -99,8 +99,8 @@ export default function FilterBar({
         </div>
       </div>
 
-      <div className="mt-4 pt-3 border-t border-pink-100 text-xs text-[#8b7f9e]">
-        Showing <span className="text-pink-600 font-bold">{resultCount}</span> question
+      <div className="mt-5 pt-4 border-t border-slate-100 text-xs text-slate-400">
+        Showing <span className="text-violet-600 font-semibold">{resultCount}</span> question
         {resultCount !== 1 ? "s" : ""}
       </div>
     </div>

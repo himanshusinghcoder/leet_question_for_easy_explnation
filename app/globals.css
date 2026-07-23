@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 :root {
-  --background: #fdf9f3;
-  --foreground: #2b2440;
+  --background: #f4f6f6;
+  --foreground: #232338;
 }
 
 @theme inline {
@@ -12,8 +12,77 @@
   --font-mono: var(--font-geist-mono);
 }
 
+* {
+  scroll-behavior: smooth;
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  min-height: 100vh;
+}
+
+::selection {
+  background: #c7f9e5;
+  color: #14532d;
+}
+
+/* Soft, calm blurred blobs sitting fixed behind all page content. */
+.bg-blobs {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.bg-blobs::before,
+.bg-blobs::after,
+.bg-blobs .blob-3 {
+  content: "";
+  position: absolute;
+  border-radius: 999px;
+  filter: blur(90px);
+  opacity: 0.55;
+}
+
+.bg-blobs::before {
+  width: 42rem;
+  height: 42rem;
+  top: -14rem;
+  left: -10rem;
+  background: radial-gradient(circle, #bdf5df 0%, transparent 70%);
+}
+
+.bg-blobs::after {
+  width: 38rem;
+  height: 38rem;
+  top: 6rem;
+  right: -14rem;
+  background: radial-gradient(circle, #dfe0ff 0%, transparent 70%);
+}
+
+.bg-blobs .blob-3 {
+  width: 34rem;
+  height: 34rem;
+  bottom: -12rem;
+  left: 18rem;
+  background: radial-gradient(circle, #ffe3ee 0%, transparent 70%);
+}
+
+/* Slim custom scrollbar for a tidier, modern feel */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #d6dde0;
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #b9c4c9;
 }
