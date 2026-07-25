@@ -1,20 +1,43 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { questions, patterns, difficulties, categories, getPatternById } from "@/lib/data";
 import { useAllProgress } from "@/lib/progress";
 import FilterBar from "@/components/FilterBar";
-import PatternPanel from "@/components/PatternPanel";
+import PatternStrip from "@/components/PatternStrip";
 import QuestionCard from "@/components/QuestionCard";
 
+const FILTERS_KEY = "dsa-filters";
+const defaultFilters = {
+  search: "",
+  difficulty: "All",
+  patternId: "All",
+  category: "All",
+  status: "All",
+};
+
 export default function Home() {
-  const [filters, setFilters] = useState({
-    search: "",
-    difficulty: "All",
-    patternId: "All",
-    category: "All",
-    status: "All",
-  });
+  const [filters, setFilters] = useState(defaultFilters);
+  // Guards the save effect so it can't fire (and overwrite the saved
+  // filters with the initial defaults) before restoration has run.
+  const [hydrated, setHydrated] = useState(false);
+
+  // Restore filters saved from before navigating away (e.g. into a question
+  // and back), so the dashboard doesn't reset every time you come back.
+  useEffect(() => {
+    try {
+      const saved = sessionStorage.getItem(FILTERS_KEY);
+      if (saved) setFilters({ ...defaultFilters, ...JSON.parse(saved) });
+    } catch {
+      // ignore malformed/inaccessible storage
+    }
+    setHydrated(true);
+  }, []);
+
+  useEffect(() => {
+    if (!hydrated) return;
+    sessionStorage.setItem(FILTERS_KEY, JSON.stringify(filters));
+  }, [filters, hydrated]);
 
   const progress = useAllProgress();
 
@@ -103,10 +126,15 @@ export default function Home() {
         </div>
       </div>
 
+      {/* Horizontal pattern strip */}
+      <div className="max-w-7xl mx-auto px-6 pt-6">
+        <PatternStrip patterns={patterns} />
+      </div>
+
       {/* Main layout */}
       <main className="max-w-7xl mx-auto px-6 py-6 grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-6">
         {/* Sidebar */}
-        <aside className="space-y-6 lg:sticky lg:top-24 self-start">
+        <aside className="lg:sticky lg:top-24 self-start">
           <FilterBar
             patterns={patterns}
             difficulties={difficulties}
@@ -115,7 +143,6 @@ export default function Home() {
             setFilters={setFilters}
             resultCount={filtered.length}
           />
-          <PatternPanel patterns={patterns} />
         </aside>
 
         {/* Question list */}
